@@ -7,11 +7,13 @@ const height = canvas.height;
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
 
-const R = 200;
-const halfR = R / 2;
+const scale = 100;
 const tickSize = 5;
 
-function draw() {
+function draw(rValue) {
+
+    const R_pixels = rValue * scale;
+    const half_R_pixels = R_pixels / 2;
     ctx.clearRect(0, 0, width, height);
 
     ctx.lineWidth = 1.5;
@@ -41,13 +43,13 @@ function draw() {
     ctx.stroke();
 
     ctx.beginPath();
-    const xTicks = [-R, -halfR, halfR, R];
+    const xTicks = [-R_pixels, -half_R_pixels, half_R_pixels, R_pixels];
     xTicks.forEach(offset => {
         ctx.moveTo(centerX + offset, centerY - tickSize);
         ctx.lineTo(centerX + offset, centerY + tickSize);
     });
 
-    const yTicks = [-R, -halfR, halfR, R];
+    const yTicks = [-R_pixels, -half_R_pixels, half_R_pixels, R_pixels];
     yTicks.forEach(offset => {
         ctx.moveTo(centerX - tickSize, centerY - offset);
         ctx.lineTo(centerX + tickSize, centerY - offset);
@@ -56,34 +58,33 @@ function draw() {
 
     ctx.fillStyle = "black";
 
-    ctx.fillText("-R", centerX - R, centerY + 15);
-    ctx.fillText("-R/2", centerX - halfR, centerY + 15);
-    ctx.fillText("R/2", centerX + halfR, centerY + 15);
-    ctx.fillText("R", centerX + R, centerY + 15);
+    ctx.fillText("-R", centerX - R_pixels, centerY + 15);
+    ctx.fillText("-R/2", centerX - half_R_pixels, centerY + 15);
+    ctx.fillText("R/2", centerX + half_R_pixels, centerY + 15);
+    ctx.fillText("R", centerX + R_pixels, centerY + 15);
     ctx.fillText("x", width - 12, centerY - 10);
 
-    ctx.fillText("R", centerX + 10, centerY - R);
-    ctx.fillText("R/2", centerX + 10, centerY - halfR);
-    ctx.fillText("-R/2", centerX + 10, centerY + halfR);
-    ctx.fillText("-R", centerX + 10, centerY + R);
+    ctx.fillText("R", centerX + 10, centerY - R_pixels);
+    ctx.fillText("R/2", centerX + 10, centerY - half_R_pixels);
+    ctx.fillText("-R/2", centerX + 10, centerY + half_R_pixels);
+    ctx.fillText("-R", centerX + 10, centerY + R_pixels);
     ctx.fillText("y", centerX + 12, 12);
 
     ctx.fillStyle = "rgba(51, 153, 255, 0.8)";
 
-    ctx.fillRect(centerX - R, centerY, R, halfR);
+    ctx.fillRect(centerX - R_pixels, centerY, R_pixels, half_R_pixels);
 
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
-    ctx.lineTo(centerX, centerY - R);
-    ctx.lineTo(centerX + R, centerY);
+    ctx.lineTo(centerX, centerY - R_pixels);
+    ctx.lineTo(centerX + R_pixels, centerY);
     ctx.closePath();
     ctx.fill();
 
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
-    ctx.arc(centerX, centerY, halfR, Math.PI, 1.5 * Math.PI, false);
+    ctx.arc(centerX, centerY, half_R_pixels, Math.PI, 1.5 * Math.PI, false);
     ctx.closePath();
     ctx.fill();
 }
 
-draw();

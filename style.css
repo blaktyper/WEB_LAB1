@@ -42,9 +42,11 @@
     margin-bottom: 3%;
     border-radius: 8px;
 }
-
 .btn:hover{
     background-color: rgb(191 190 190 / 0.71);
+}
+.btn:focus{
+    background-color: rgb(147 188 223);
 }
 .field_Y{
     padding: 2% 2%;
