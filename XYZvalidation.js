@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const selectR = document.getElementById("R");
     const yInput = document.getElementById("y-input");
     const errorBox = document.getElementById("error-box");
+    const form = document.getElementById("form_id");
+    const resultBody = document.getElementById("result_body");
+
 
     function validateY() {
         hideError();
@@ -67,14 +70,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
     buttonList.addEventListener("click", (event) => {
         if(event.target.classList.contains("x-btn")) {
             const parsedValX= parseFloat(event.target.value);
+
             if (!isNaN(parsedValX)) {
                 selectedX = parsedValX;
                 console.log("Выбранный X:",selectedX);
             } else {
                 console.log("X должен быть числом")
             }
-
-
         }
     });
 
@@ -113,6 +115,91 @@ document.addEventListener('DOMContentLoaded', (event) => {
         })
     }
 
+
+    if (form){
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const isXValid = validateX();
+            const yValue = validateY();
+            const rValue = validateR();
+
+            if (isXValid !== false && yValue !== false && rValue !== false) {
+
+                const result= await processPointAsync(selectedX, yValue, rValue);
+
+                savedResults.push(result);
+                localStorage.setItem("results", JSON.stringify(savedResults));
+
+                draw(rValue);
+
+                drawPoint(result.x, result.y, result.r, result.hit);
+                addRowToTable(result);
+                console.log("Результат:",result);
+
+            }
+        })
+    }
+
+
+
+
+
+    function addRowToTable(item){
+        const tr = document.createElement("tr");
+        const formattedDate = new Intl.DateTimeFormat("ru-RU", {
+            dateStyle: "short",
+            timeStyle: "medium"
+        }).format(new Date(item.timestamp))
+
+        tr.innerHTML = `
+            <td>${item.x}</td>
+            <td>${item.y}</td>
+            <td>${item.r}</td>
+            <td>${formattedDate}</td>
+            <td>${item.hit ? "Попал" : "Мимо"}</td>
+        `;
+
+        resultBody.appendChild(tr);
+    }
+
+    const savedResults = JSON.parse(localStorage.getItem("results")) || [];
+    for (const resultData of savedResults) {
+        addRowToTable(resultData);
+    }
+
+    if(selectR){
+        if (savedResults.length > 0) {
+            const lastPoint = savedResults[savedResults.length - 1];
+
+            const optionExists = Array.from(selectR.options).some(opt => opt.value === String(lastPoint.r));
+            if (optionExists) {
+                selectR.value = lastPoint.r;
+            }
+        }
+
+        const initialR = parseFloat(selectR.value);
+        draw(initialR);
+
+
+        if (savedResults.length > 0) {
+            const lastPoint = savedResults[savedResults.length - 1];
+            drawPoint(lastPoint.x, lastPoint.y, lastPoint.r, lastPoint.hit);
+        }
+
+
+        selectR.addEventListener("change", () => {
+            const currentR = parseFloat(selectR.value);
+            if (!isNaN(currentR)) {
+                draw(currentR);
+
+                if (savedResults.length > 0) {
+                    const lastPoint = savedResults[savedResults.length - 1];
+                    drawPoint(lastPoint.x, lastPoint.y, lastPoint.r, lastPoint.hit);
+                }
+            }
+        })
+    }
 
 });
 

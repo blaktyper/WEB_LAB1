@@ -88,3 +88,18 @@ function draw(rValue) {
     ctx.fill();
 }
 
+function drawPoint(x,y,r,isHit) {
+    const PixelX = centerX + (x * scale)
+    const PixelY = centerY - (y * scale)
+
+    ctx.beginPath();
+
+    ctx.arc(PixelX, PixelY, 6, 0, 2 * Math.PI, false);
+
+    ctx.fillStyle = isHit ? "#08ea08" : "#f10707";
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+}
